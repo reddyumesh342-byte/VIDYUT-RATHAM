@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VIDYUT RATHAM | AI Energy Command Center</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">VR</div>
+    <div><h1>VIDYUT RATHAM</h1><p>AI Energy Management Command Center</p></div>
+  </div>
+  <div class="top-actions">
+    <span id="connection" class="pill offline">● SIMULATION</span>
+    <button id="runBtn" class="primary">START SYSTEM</button>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div>
+    <span class="eyebrow">SMART ELECTRIC VEHICLE PROTOTYPE</span>
+    <h2>Solar + Battery + Controlled Wheel-Energy Recovery</h2>
+    <p>Real-time visualization of propulsion, solar charging and controlled recovery, with AI-assisted energy recommendations.</p>
+    <div class="hero-buttons">
+      <button onclick="setMode('normal')" class="primary">Normal Drive</button>
+      <button onclick="setMode('recovery')" class="secondary">AI Recovery Mode</button>
+      <button onclick="setMode('downhill')" class="secondary">Deceleration</button>
+    </div>
+  </div>
+  <div class="hero-art">
+    <div class="sun">☀</div><div class="panel"></div>
+    <div class="car">
+      <div class="roof"></div><div class="body"></div><div class="motor">M</div><div class="generator">G</div>
+      <div class="wheel w1"></div><div class="wheel w2"></div>
+    </div>
+    <div class="road"></div>
+  </div>
+</section>
+
+<section class="stats">
+  <article><span>Battery SOC</span><strong id="soc">72%</strong><div class="meter"><i id="socMeter"></i></div></article>
+  <article><span>Solar Input</span><strong><b id="solar">118</b> W</strong><small>Charge-side input</small></article>
+  <article><span>Motor Power</span><strong><b id="motor">160</b> W</strong><small>Propulsion demand</small></article>
+  <article><span>Recovered Power</span><strong><b id="recovered">0</b> W</strong><small>Controlled recovery</small></article>
+  <article><span>Vehicle Speed</span><strong><b id="speed">18</b> km/h</strong><small>Wheel/Hall estimate</small></article>
+</section>
+
+<section class="grid">
+<div class="card flow-card">
+  <div class="card-title"><h3>Live Energy Flow</h3><span class="tag">REAL TIME</span></div>
+  <div class="flow">
+    <div class="node solarNode"><div class="icon">☀️</div><b>Solar</b><small id="solarFlow">118 W</small></div>
+    <div class="arrow">➜</div>
+    <div class="node"><div class="icon">⚡</div><b>Controller</b><small>Charge</small></div>
+    <div class="arrow">➜</div>
+    <div class="node batteryNode"><div class="icon">🔋</div><b>Battery</b><small id="batteryFlow">72%</small></div>
+    <div class="arrow">➜</div>
+    <div class="node"><div class="icon">🎛️</div><b>Motor Driver</b><small id="duty">70% PWM</small></div>
+    <div class="arrow">➜</div>
+    <div class="node motorNode"><div class="icon">⚙️</div><b>DC Motor</b><small id="motorFlow">160 W</small></div>
+  </div>
+  <div class="recovery-line">
+    <span>🛞 Wheels</span><b>↔</b><span>🔄 Wheel Generator</span><b>➜</b><span>🔋 Recovery Input</span>
+    <strong id="recoveryStatus">OFF</strong>
+  </div>
+</div>
+
+<div class="card ai-card">
+  <div class="card-title"><h3>AI Energy Advisor</h3><span class="ai-badge">AI</span></div>
+  <div class="ai-score"><div><small>Energy efficiency score</small><strong id="score">82</strong>/100</div><div class="ring"><span id="risk">LOW</span></div></div>
+  <div class="recommendation"><b id="aiTitle">AI recommends Normal Drive</b><p id="aiText">Solar input is sufficient for current auxiliary energy demand. Controlled recovery is not required during steady-speed operation.</p></div>
+  <div class="ai-grid"><div><span>Predicted SOC +5 min</span><b id="predSoc">73%</b></div><div><span>Recovery potential</span><b id="potential">8 W</b></div><div><span>System state</span><b id="state">STABLE</b></div><div><span>AI confidence</span><b id="confidence">91%</b></div></div>
+</div>
+</section>
+
+<section class="grid">
+<div class="card chart-card"><div class="card-title"><h3>Power Analytics</h3><span class="tag">WATTS</span></div><canvas id="powerChart"></canvas></div>
+<div class="card chart-card"><div class="card-title"><h3>Battery Prediction</h3><span class="tag">AI FORECAST</span></div><canvas id="socChart"></canvas></div>
+</section>
+
+<section class="grid lower">
+<div class="card">
+<h3>Prototype Measurements</h3>
+<div class="table">
+<div><span>Battery voltage</span><b id="bv">12.10 V</b></div>
+<div><span>Generator voltage</span><b id="gv">0.00 V</b></div>
+<div><span>Generator current</span><b id="gi">0.00 A</b></div>
+<div><span>Recovered energy</span><b id="energy">0.00 Wh</b></div>
+<div><span>Motor PWM</span><b id="pwm">70%</b></div>
+</div>
+</div>
+<div class="card">
+<h3>System Architecture</h3>
+<div class="architecture">
+<span>☀ Solar</span><b>→</b><span>🔌 Charge Controller</span><b>→</b><span>🔋 Battery</span>
+<b>→</b><span>⚙ Motor</span><b>→</b><span>🛞 Wheel</span><b>↔</b><span>🔄 Generator</span>
+</div>
+<p class="warning">AI assists energy management; it does not create energy. Generator loading can increase wheel resistance, so recovered electrical energy must be evaluated against the energy used to propel the vehicle.</p>
+</div>
+</section>
+
+<section class="card log-card">
+<div class="card-title"><h3>AI / ESP32 Event Log</h3><button class="small" onclick="clearLog()">Clear</button></div>
+<pre id="log"></pre>
+</section>
+</main>
+<footer>VIDYUT RATHAM • Laptop dashboard • Python + HTML/CSS/JavaScript + ESP32 • Prototype demonstration</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>
